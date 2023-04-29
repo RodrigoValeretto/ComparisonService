@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "ComparisonService";
+
+package Compare;
+
+// The greeting service definition.
+service Comparer {
+  // Sends a greeting
+  rpc Compare (CompareRQ) returns (CompareRS);
+}
+
+// The request message containing the user's name.
+message CompareRQ {
+  bytes image = 1;
+  string GUID = 2;
+}
+
+// The response message containing the greetings.
+message CompareRS {
+  bool isEqual = 1;
+}

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcService1", "GrpcService1\GrpcService1.csproj", "{1BE99CF8-FE6B-4100-916C-5903905C6E26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparisonService", "ComparisonService\ComparisonService.csproj", "{1BE99CF8-FE6B-4100-916C-5903905C6E26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

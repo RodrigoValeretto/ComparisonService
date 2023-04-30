@@ -12,8 +12,8 @@ builder.Services.AddGrpcReflection();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<GreeterService>();
 app.MapGrpcService<ComparerService>();
+app.MapGrpcService<AnonymizerService>();
 
 if (app.Environment.IsDevelopment())
 {

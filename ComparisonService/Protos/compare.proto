@@ -4,19 +4,19 @@ option csharp_namespace = "ComparisonService";
 
 package Compare;
 
-// The greeting service definition.
+// The comparer service definition.
 service Comparer {
   // Sends a greeting
   rpc Compare (CompareRQ) returns (CompareRS);
 }
 
-// The request message containing the user's name.
+// The request message containing the image and the guid to be searched and compared.
 message CompareRQ {
   bytes image = 1;
   string GUID = 2;
 }
 
-// The response message containing the greetings.
+// The response message containing the result of the compare service.
 message CompareRS {
   bool isEqual = 1;
 }

@@ -9,7 +9,7 @@ using grpc = global::Grpc.Core;
 
 namespace ComparisonService {
   /// <summary>
-  /// The greeting service definition.
+  /// The comparer service definition.
   /// </summary>
   public static partial class Comparer
   {

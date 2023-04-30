@@ -14,7 +14,7 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _logger = logger;
     }
 
-    public override Task<AnonymizeRS> Anonymize(AnonymizeRQ request, ServerCallContext context)
+    public override async Task<AnonymizeRS> Anonymize(AnonymizeRQ request, ServerCallContext context)
     {
         _logger.LogInformation("Creating connection with external anonymization service");
         var channel = GrpcChannel.ForAddress("http://localhost:5098");
@@ -23,11 +23,11 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _logger.LogInformation("Connection successfully acquired, sending request");
         _logger.LogDebug("AnonymizeRQ: {}", request);
 
-        AnonymizeRS response = client.Anonymize(request);
-
+        var response = await client.AnonymizeAsync(request);
+        
         _logger.LogInformation("Response obtained successfully");
         _logger.LogDebug("AnonymizeRS: {}", request);
 
-        return Task.FromResult(response);
+        return response;
     }
 }

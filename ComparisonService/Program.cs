@@ -1,4 +1,6 @@
 using ComparisonService.Services;
+using EvolveDb;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
+
+var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
+var evolve = new Evolve(cnx, msg => { })
+{
+    Locations = new[] {"db/migrations"},
+    IsEraseDisabled = true,
+};
+
+evolve.Migrate();
 
 var app = builder.Build();
 

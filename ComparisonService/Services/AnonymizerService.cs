@@ -1,4 +1,5 @@
 using AnonymizationService;
+using ComparisonService.db.Context;
 using ComparisonService.db.Repositories;
 using Google.Protobuf;
 using Grpc.Core;
@@ -9,12 +10,12 @@ namespace ComparisonService.Services;
 public class AnonymizerService : Anonymizer.AnonymizerBase
 {
     private readonly ILogger<AnonymizerService> _logger;
-    private ImageRepository _imageRepository;
+    private readonly ImageContext _imageContext;
 
-    public AnonymizerService(ILogger<AnonymizerService> logger, ImageRepository imageRepository)
+    public AnonymizerService(ILogger<AnonymizerService> logger, ImageContext imageContext)
     {
         _logger = logger;
-        _imageRepository = imageRepository;
+        _imageContext = imageContext;
     }
 
     public override async Task<AnonymizeRS> Anonymize(AnonymizeRQ request, ServerCallContext context)
@@ -32,7 +33,7 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _logger.LogDebug("AnonymizeRS: {}", request);
         
         _logger.LogInformation("Adding embedded response to DB");
-        await _imageRepository.Add(request.GUID, response.AnonymizedImage);
+        _imageContext.Add(request.GUID, response.AnonymizedImage);
         _logger.LogInformation("Embedded response added to DB successfully");
 
         return response;

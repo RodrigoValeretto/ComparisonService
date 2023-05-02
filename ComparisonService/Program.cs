@@ -1,6 +1,9 @@
+using ComparisonService.db.Context;
 using ComparisonService.Services;
 using EvolveDb;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using Microsoft.EntityFrameworkCore.Design;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,15 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
+builder.Services.AddMvc();
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ImageContext>(
+    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
-var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
-var evolve = new Evolve(cnx, msg => { })
-{
-    Locations = new[] {"db/migrations"},
-    IsEraseDisabled = true,
-};
-
-evolve.Migrate();
+// var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
+// var evolve = new Evolve(cnx, msg => { })
+// {
+//     Locations = new[] {"db/migrations"},
+//     IsEraseDisabled = true,
+// };
+// evolve.Migrate();
 
 var app = builder.Build();
 

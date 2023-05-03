@@ -20,12 +20,14 @@ public class ComparerService : Comparer.ComparerBase
 
     public override async Task<CompareRS> Compare(CompareRQ request, ServerCallContext context)
     {
-        if (request.GUID == null)
+        if (request.Guid == null)
         {
             throw new Exception("The received GUID was null. Aborting operation.");
         }
-        Image? dbImage = await _imageContext.Get(request.GUID);
+        Image? dbImage = await _imageContext.Get(request.Guid);
         ByteString rqImage = request.Image;
+        
+        
 
         if (dbImage == null)
         {

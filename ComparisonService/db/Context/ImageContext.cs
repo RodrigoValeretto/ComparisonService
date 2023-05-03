@@ -14,7 +14,7 @@ public class ImageContext : DbContext
         return await Images.FindAsync(guid);
     }
 
-    public async void Add(string guid, ByteString image)
+    public async Task Add(string guid, ByteString image)
     {
         await Images.AddAsync(new Image
         {

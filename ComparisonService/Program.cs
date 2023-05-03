@@ -13,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
-builder.Services.AddMvc();
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ImageContext>(
+builder.Services.AddDbContext<ImageContext>(
     opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
 // var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));

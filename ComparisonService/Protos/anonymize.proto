@@ -6,17 +6,17 @@ package Anonymize;
 
 // The anonymizer service definition.
 service Anonymizer {
-  // Sends a greeting
+  // Call anonymization service
   rpc Anonymize (AnonymizeRQ) returns (AnonymizeRS);
 }
 
 // The request message containing the image and the respective guid.
 message AnonymizeRQ {
   bytes image = 1;
-  string GUID = 2;
+  string guid = 2;
 }
 
 // The response message containing the anonymized image.
 message AnonymizeRS {
-  bytes anonymized_image = 1;
+  bytes anonymizedImage = 1;
 }

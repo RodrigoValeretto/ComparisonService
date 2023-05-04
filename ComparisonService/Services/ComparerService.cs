@@ -1,5 +1,4 @@
 using ComparisonService.db.Context;
-using ComparisonService.db.Repositories;
 using ComparisonService.Entities;
 using Google.Protobuf;
 using Grpc.Core;

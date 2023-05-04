@@ -16,13 +16,13 @@ builder.Services.AddGrpcReflection();
 builder.Services.AddDbContext<ImageContext>(
     opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
-// var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
-// var evolve = new Evolve(cnx, msg => { })
-// {
-//     Locations = new[] {"db/migrations"},
-//     IsEraseDisabled = true,
-// };
-// evolve.Migrate();
+var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
+var evolve = new Evolve(cnx, msg => { })
+{
+    Locations = new[] {"db/Migrations"},
+    IsEraseDisabled = true,
+};
+evolve.Migrate();
 
 var app = builder.Build();
 

@@ -26,8 +26,6 @@ public class ComparerService : Comparer.ComparerBase
         }
         Image? dbImage = await _imageContext.Get(request.Guid);
         ByteString rqImage = request.Image;
-        
-        
 
         if (dbImage == null)
         {

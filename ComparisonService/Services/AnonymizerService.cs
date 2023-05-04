@@ -1,7 +1,10 @@
+using System.Net.Http.Headers;
+using System.Text;
 using AnonymizationService;
 using ComparisonService.db.Context;
 using Grpc.Core;
 using Grpc.Net.Client;
+using Newtonsoft.Json;
 
 namespace ComparisonService.Services;
 
@@ -23,22 +26,34 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _logger.LogInformation("Creating connection with external anonymization service");
         var address =
             $"{_config.GetValue<string>("ConfigSettings:AnonymizerHost")}:{_config.GetValue<string>("ConfigSettings:AnonymizerPort")}";
-        var channel = GrpcChannel.ForAddress(address);
-        Anonymizer.AnonymizerClient client = new Anonymizer.AnonymizerClient(channel);
-        
-        _logger.LogInformation("Connection successfully acquired, sending request");
-        _logger.LogDebug("AnonymizeRQ: {}", request);
+        var client = new HttpClient();
+        client.BaseAddress = new Uri(address);
+        // Add an Accept header for JSON format.
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/bson"));
 
-        AnonymizeRS response = new AnonymizeRS();
+        _logger.LogInformation("Connection successfully acquired, sending request");
+        var values = new Dictionary<string, string>
+        {
+            {"Guid", request.Guid},
+            {"Image", request.Image.ToBase64()}
+        };
+
+        var content = new FormUrlEncodedContent(values);
+        var json = JsonConvert.SerializeObject(values);
+        _logger.LogDebug("AnonymizeRQ-JSON: {}", json);
+        _logger.LogDebug("AnonymizeRQ-Content: {}", content);
         
         try
         {
-            response = await client.AnonymizeAsync(request);
+            var httpContent = new StringContent(json, Encoding.ASCII, "application/json");
+            var response = await client.PostAsync("/anonymize", httpContent);
+            var rs = JsonConvert.DeserializeObject<AnonymizeRS>(await response.Content.ReadAsStringAsync());
             _logger.LogInformation("Response obtained successfully");
-            _logger.LogDebug("AnonymizeRS: {}", request);
+            _logger.LogDebug("Response: {}", response.ToString());
         
             _logger.LogInformation("Adding embedded response to DB");
-            await _imageContext.Add(request.Guid, response.AnonymizedImage);
+            await _imageContext.Add(request.Guid, rs.AnonymizedImage);
             _logger.LogInformation("Embedded response added to DB successfully");
         }
         catch (Exception ex)
@@ -46,6 +61,6 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
             _logger.LogError("Error communicating with anonymizer service: {}", ex);
         }
         
-        return response;
+        return null;
     }
 }

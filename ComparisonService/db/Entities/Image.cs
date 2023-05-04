@@ -9,5 +9,5 @@ public class Image
     [System.ComponentModel.DataAnnotations.Key]
     public Guid Guid { get; set; }
 
-    public string Embeddings { get; set; } = null!;
+    public double[] Embeddings { get; set; } = null!;
 }

@@ -38,7 +38,7 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
             _logger.LogDebug("AnonymizeRS: {}", request);
         
             _logger.LogInformation("Adding embedded response to DB");
-            await _imageContext.Add(request.Guid, response.AnonymizedImage);
+            await _imageContext.Add(request.Guid, response.Embeddings.ToArray());
             _logger.LogInformation("Embedded response added to DB successfully");
         }
         catch (Exception ex)

@@ -30,3 +30,14 @@ or
 dotnet ./ComparisonService.dll
 ```
 
+## Variables
+The app uses enviroment variables to set a few things, so it is important to get them the right way.
+<br>
+<br>
+**ASPNETCORE_ENVIROMENT** defines if the app run in dev or prod mode, for this first version only dev is configurated, feel free to complete as you want.
+<br>
+<br>
+**ASPNETCORE_URLS** defines the full URL that the ComparisonService will run, host and port, be certain to not use the same port as the other services (AnonymizationService or DB).
+<br>
+<br>
+Some of the variables are setted in the appsettings file, such as the postgres connection string and the URL that the class anonymizer service will use to connect with the python rest api.

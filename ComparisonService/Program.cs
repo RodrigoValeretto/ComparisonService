@@ -15,6 +15,8 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 builder.Services.AddDbContext<ImageContext>(
     opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
+builder.Services.AddDbContext<ComparisonContext>(
+    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("postgres")));
 
 var cnx = new NpgsqlConnection(builder.Configuration.GetConnectionString("postgres"));
 var evolve = new Evolve(cnx, msg => { })

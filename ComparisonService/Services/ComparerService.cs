@@ -10,13 +10,15 @@ public class ComparerService : Comparer.ComparerBase
     private readonly ILogger<ComparerService> _logger;
     private readonly IConfiguration _config;
     private readonly ImageContext _imageContext;
+    private readonly ComparisonContext _comparisonContext;
     private const double THRESHOLD = 0.05;
 
-    public ComparerService(ILogger<ComparerService> logger, IConfiguration config, ImageContext imageContext)
+    public ComparerService(ILogger<ComparerService> logger, IConfiguration config, ImageContext imageContext, ComparisonContext comparisonContext)
     {
         _logger = logger;
         _config = config;
         _imageContext = imageContext;
+        _comparisonContext = comparisonContext;
     }
 
     public override async Task<CompareRS?> Compare(CompareRQ request, ServerCallContext context)
@@ -44,18 +46,35 @@ public class ComparerService : Comparer.ComparerBase
         anonymizeRQ.Guid = request.Guid;
         anonymizeRQ.Image = request.Image;
 
-        var anonymizeRS = await Utils.CallAnonymizerService(_logger, _config, anonymizeRQ);
-        
-        var anonEmbeddings = anonymizeRS.Embeddings.ToArray();
-        var dbEmbeddings = dbImage.embeddings;
+        try
+        {
+            var anonymizeRS = await Utils.CallAnonymizerService(_logger, _config, anonymizeRQ);
+            if (anonymizeRS == null)
+            {
+                throw new Exception("Anonymizer Service returned null");
+            }
 
-        double distance = Accord.Math.Distance.Cosine(anonEmbeddings, dbEmbeddings);
+            var anonEmbeddings = anonymizeRS.Embeddings.ToArray();
+            var dbEmbeddings = dbImage.embeddings;
 
-        var compareRS = new CompareRS();
+            double distance = Accord.Math.Distance.Cosine(anonEmbeddings, dbEmbeddings);
 
-        // Distance = 1 - Similarity
-        compareRS.IsEqual = (distance < THRESHOLD);
+            var compareRS = new CompareRS();
 
-        return compareRS;
+            // Distance = 1 - Similarity
+            compareRS.IsEqual = (distance < THRESHOLD);
+
+            //Saving comparison in DB
+            _logger.LogInformation("Adding comparison to DB");
+            await _comparisonContext.Add(dbEmbeddings, anonEmbeddings, compareRS.IsEqual);
+            _logger.LogInformation("Comparison successfully added to DB");
+            
+            return compareRS;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error ocurred while processing image comparison: {}", ex);
+            return null;
+        }
     }
 }

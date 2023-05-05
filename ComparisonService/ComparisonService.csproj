@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Accord.Math" Version="3.8.0" />
         <PackageReference Include="Evolve" Version="3.1.0" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.52.0" />

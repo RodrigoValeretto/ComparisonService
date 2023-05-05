@@ -11,7 +11,7 @@ public class ImageContext : DbContext
 
     public async Task<Image?> Get(string guid)
     {
-        return await images.FindAsync(guid);
+        return await images.FindAsync(Guid.Parse(guid));
     }
 
     public async Task Add(string guid, double[] embeddings)

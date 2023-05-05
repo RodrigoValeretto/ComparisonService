@@ -31,8 +31,8 @@ dotnet ./ComparisonService.dll
 ```
 
 ## Branches
-There is one version of this service that uses Rest instead of GRPC (The main branch uses this one) but it was stopped in mid of development.
-The branch name is "anonymization_Rest".
+There is one version of this service that uses Rest instead of GRPC (The main branch uses GRPC) but it was stopped in mid of development.
+The branch name is "anonymizer_rest".
 
 ## Variables
 The app uses enviroment variables to set a few things, so it is important to get them the right way.

@@ -7,7 +7,7 @@ namespace ComparisonService.Entities;
 public class Image
 {
     [System.ComponentModel.DataAnnotations.Key]
-    public Guid Guid { get; set; }
+    public Guid guid { get; set; }
 
-    public double[] Embeddings { get; set; } = null!;
+    public double[] embeddings { get; set; } = null!;
 }

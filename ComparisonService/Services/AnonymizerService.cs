@@ -18,7 +18,7 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _imageContext = imageContext;
     }
 
-    public override async Task<AnonymizeRS> Anonymize(AnonymizeRQ request, ServerCallContext context)
+    public override async Task<AnonymizeRS?> Anonymize(AnonymizeRQ request, ServerCallContext context)
     {
         _logger.LogInformation("Creating connection with external anonymization service");
         var address =
@@ -29,23 +29,21 @@ public class AnonymizerService : Anonymizer.AnonymizerBase
         _logger.LogInformation("Connection successfully acquired, sending request");
         _logger.LogDebug("AnonymizeRQ: {}", request);
 
-        AnonymizeRS response = new AnonymizeRS();
-        
         try
         {
-            response = await client.AnonymizeAsync(request);
+            var response = await client.AnonymizeAsync(request);
             _logger.LogInformation("Response obtained successfully");
-            _logger.LogDebug("AnonymizeRS: {}", request);
+            _logger.LogDebug("AnonymizeRS: {}", response);
         
             _logger.LogInformation("Adding embedded response to DB");
             await _imageContext.Add(request.Guid, response.Embeddings.ToArray());
             _logger.LogInformation("Embedded response added to DB successfully");
+            return response;
         }
         catch (Exception ex)
         {
             _logger.LogError("Error communicating with anonymizer service: {}", ex);
+            return null;
         }
-        
-        return response;
     }
 }

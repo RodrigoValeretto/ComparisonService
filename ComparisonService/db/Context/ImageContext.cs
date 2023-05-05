@@ -7,26 +7,19 @@ namespace ComparisonService.db.Context;
 public class ImageContext : DbContext
 {
     public ImageContext(DbContextOptions<ImageContext> options) : base(options) { }
-    public DbSet<Image> Images { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Image>()
-            .Property(p => p.Embeddings)
-            .HasColumnType("jsonb");
-    }
+    public DbSet<Image> images { get; set; }
 
     public async Task<Image?> Get(string guid)
     {
-        return await Images.FindAsync(guid);
+        return await images.FindAsync(guid);
     }
 
     public async Task Add(string guid, double[] embeddings)
     {
-        await Images.AddAsync(new Image
+        await images.AddAsync(new Image
         {
-            Guid = Guid.Parse(guid),
-            Embeddings = embeddings
+            guid = Guid.Parse(guid),
+            embeddings = embeddings
         });
         await this.SaveChangesAsync();
     }
